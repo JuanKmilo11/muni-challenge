@@ -18,11 +18,12 @@ resource "aws_iam_role" "tr_ecs_metabase" {
 
 }
 
-data "aws_iam_policy" "ecs_task_exec" {
-  arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+resource "aws_iam_role_policy_attachment" "ecs_agent" {
+  role       = aws_iam_role.tr_ecs_metabase.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
-resource "aws_iam_role_policy_attachment" "rpa1" {
-  role       = aws_iam_role.tr_ecs_metabase.name
-  policy_arn = data.aws_iam_policy.ecs_task_exec.arn
+resource "aws_iam_instance_profile" "ecs_agent" {
+  name = "ecs-agent"
+  role = aws_iam_role.tr_ecs_metabase.name
 }
