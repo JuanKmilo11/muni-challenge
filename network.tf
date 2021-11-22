@@ -34,56 +34,7 @@ resource "aws_subnet" "metabase-subnet-2" {
   }
 }
 
-resource "aws_route_table" "rt" {
-  vpc_id = aws_vpc.vpc_metabase_1.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.metabase-igateway.id
-  }
-
-  tags = {
-    Name = "mde_mb_rt"
-  }
+resource "aws_db_subnet_group" "db_subnet_group" {
+  subnet_ids = [aws_subnet.metabase-subnet-1.id, aws_subnet.metabase-subnet-2.id]
 }
 
-resource "aws_main_route_table_association" "mra" {
-  vpc_id         = aws_vpc.vpc_metabase_1.id
-  route_table_id = aws_route_table.rt.id
-}
-
-resource "aws_route_table_association" "rta1" {
-  subnet_id      = aws_subnet.metabase-subnet-1.id
-  route_table_id = aws_route_table.rt.id
-}
-
-resource "aws_route_table_association" "rta2" {
-  subnet_id      = aws_subnet.metabase-subnet-2.id
-  route_table_id = aws_route_table.rt.id
-}
-
-resource "aws_eip" "s1" {
-  vpc = true
-}
-
-resource "aws_eip" "s2" {
-  vpc = true
-}
-
-resource "aws_nat_gateway" "ngw1" {
-  allocation_id = aws_eip.s1.id
-  subnet_id     = aws_subnet.metabase-subnet-1.id
-
-  tags = {
-    Name = "MDE MB NAT 1"
-  }
-}
-
-resource "aws_nat_gateway" "ngw2" {
-  allocation_id = aws_eip.s2.id
-  subnet_id     = aws_subnet.metabase-subnet-2.id
-
-  tags = {
-    Name = "MDE MB NAT 2"
-  }
-}
