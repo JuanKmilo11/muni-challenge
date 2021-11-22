@@ -13,8 +13,8 @@ resource "aws_lb" "lb-metabase" {
   name               = "lb-${local.service_name}"
   internal           = false
   load_balancer_type = "application"
-  //security_groups    = [aws_security_group.lb_sg.id]
-  subnets = [aws_subnet.metabase-subnet-1.id, aws_subnet.metabase-subnet-2.id]
+  security_groups    = [aws_security_group.sec_group_ecs.id]
+  subnets            = [aws_subnet.metabase-subnet-1.id, aws_subnet.metabase-subnet-2.id]
 
   tags = {
     Name = "${local.service_name}-load-balancer"
