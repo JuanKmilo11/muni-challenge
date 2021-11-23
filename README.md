@@ -26,11 +26,13 @@ The infraestructure developed its based on the following diagram:
  - Others: Policies, Roles and Security Groups
 
  ## Implementation
-
+ 
 Initialize the project and terraform files
  > terraform init
+ 
 Review resources to be created
  > terraform plan
+ 
 Upload changes and initialized 
  > terraform apply
 
