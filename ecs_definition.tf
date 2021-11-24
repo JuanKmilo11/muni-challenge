@@ -9,9 +9,7 @@ locals {
       image      = "metabase/metabase"
       essential  = true
       privileged = true
-      memory     = 1024
-      cpu        = 1024
-
+      memory     = 256
       "logConfiguration" : {
 
         "logDriver" : "awslogs",
@@ -24,7 +22,6 @@ locals {
       portMappings = [
         {
           "containerPort" = var.port
-          "hostPort"      = var.port
         }
       ]
       environment = [
@@ -86,13 +83,14 @@ data "aws_ami" "ecs_image" {
 }
 
 resource "aws_launch_configuration" "instancec_metabase" {
-  name                 = "metabase_instance"
-  image_id             = data.aws_ami.ecs_image.id
-  instance_type        = "t2.micro"
-  iam_instance_profile = aws_iam_instance_profile.ecs_agent.name
-  user_data            = data.template_file.user_data.rendered
-  security_groups      = [aws_security_group.sec_group_ecs.id]
-  key_name             = aws_key_pair.instance_key.key_name
+  name                        = "metabase_instance"
+  image_id                    = data.aws_ami.ecs_image.id
+  instance_type               = "t2.micro"
+  iam_instance_profile        = aws_iam_instance_profile.ecs_agent.name
+  user_data                   = data.template_file.user_data.rendered
+  security_groups             = [aws_security_group.sec_group_ecs.id]
+  associate_public_ip_address = true
+  key_name                    = aws_key_pair.instance_key.key_name
 }
 
 resource "aws_autoscaling_group" "asg" {
